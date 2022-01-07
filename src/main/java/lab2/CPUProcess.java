@@ -9,7 +9,7 @@ public class CPUProcess extends Thread {
     public int generalNumberOfProcesses;
     public int requestedProcesses = 0;
     private final Process process;
-    private List<CPU> cpuList;
+    private final List<CPU> cpuList;
 
     public CPUProcess(int generalNumberOfProcesses, Process process, List<CPU> cpuList) {
         this.generalNumberOfProcesses = generalNumberOfProcesses;
@@ -37,14 +37,10 @@ public class CPUProcess extends Thread {
         }
         cpuList.forEach(cpu -> {
             if(!cpu.getState().equals(State.TERMINATED)) {
-                System.out.println("Interupting " + cpu.getName());
+                System.out.println("Interrupting " + cpu.getName());
                 cpu.interrupt();
             }
         });
-    }
-
-    public int getRequestedProcesses() {
-        return requestedProcesses;
     }
 
     public int getGeneralNumberOfProcesses() {

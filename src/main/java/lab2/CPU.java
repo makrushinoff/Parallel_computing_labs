@@ -26,7 +26,7 @@ public class CPU extends Thread {
                         }
                     }
                     process.setNeedToHandle(false);
-                    System.out.println(this.getName() + "Got message: " + process.getMessage());
+                    System.out.println(this.getName() + " Got message: " + process.getMessage());
                     Thread.sleep((long) (Math.random() * 1000 + 50));
                     handledProcesses++;
                 } catch (InterruptedException e) {

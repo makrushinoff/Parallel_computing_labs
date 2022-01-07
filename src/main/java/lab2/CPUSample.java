@@ -1,8 +1,6 @@
 package lab2;
 
-import java.lang.Thread.State;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class CPUSample {
@@ -26,7 +24,7 @@ public class CPUSample {
 
         int handled = cpu1.getHandledProcesses() + cpu2.getHandledProcesses();
         int destroyed = cpuProcess.getGeneralNumberOfProcesses() - handled;
-        double percentOfDestroyed = destroyed / cpuProcess.getGeneralNumberOfProcesses();
+        double percentOfDestroyed = ((double)destroyed / (double)cpuProcess.getGeneralNumberOfProcesses()) * 100;
         System.out.println("Destroyed: " + destroyed + " processes. It is a " + percentOfDestroyed + "% of all processes");
     }
 }

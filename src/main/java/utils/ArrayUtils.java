@@ -27,6 +27,14 @@ public final class ArrayUtils {
         return array;
     }
 
+    public static Integer[] getLittleRandomArrayInteger(int arraySize) {
+        Integer[] array = new Integer[arraySize];
+        for(int i = 0; i < arraySize; i++) {
+            array[i] = (int) (Math.random() * 100);
+        }
+        return array;
+    }
+
     public static long[] getRandomArrayLong(int arraySize) {
         long[] array = new long[arraySize];
         for(int i = 0; i < arraySize; i++) {

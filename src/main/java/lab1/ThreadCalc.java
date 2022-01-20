@@ -18,9 +18,13 @@ public class ThreadCalc extends Thread {
 
     @Override
     public void run() {
+        double maxValue = 0.0;
         for (int i = startIndex; i <= endIndex; i++) {
-            result += Math.pow(Math.abs(array.get(i)), 2);
+            if(maxValue < Math.abs(array.get(i))) {
+                maxValue = array.get(i);
+            }
         }
+        result = maxValue;
     }
 
     public double getResult() {

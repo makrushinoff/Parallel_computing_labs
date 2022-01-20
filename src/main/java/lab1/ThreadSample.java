@@ -1,5 +1,6 @@
 package lab1;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,9 +11,11 @@ public class ThreadSample {
     static double calculateNorm(List<Double> array) {
         double result = 0.0;
         for(double num : array) {
-            result += Math.pow(Math.abs(num), 2);
+            if(result < Math.abs(num)) {
+                result = num;
+            }
         }
-        return Math.sqrt(result);
+        return result;
     }
 
     static void calculateParallel(int number, List<Double> randomArray) throws InterruptedException {
@@ -34,11 +37,11 @@ public class ThreadSample {
         for (int i = 0; i < threads.length; i++) {
             threads[i].join();
         }
-        double result = 0.0;
+        List<Double> resultList = new ArrayList<>();
         for(int i = 0; i < threads.length; i++) {
-            result += threads[i].getResult();
+            resultList.add(threads[i].getResult());
         }
-        result = Math.sqrt(result);
+        double result = calculateNorm(resultList);
         System.out.printf("Result with %s threads: %s time : %sms.%n", threads.length, result, (System.currentTimeMillis() - timeBefore));
     }
 

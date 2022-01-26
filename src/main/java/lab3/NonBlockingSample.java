@@ -1,14 +1,13 @@
 package lab3;
 
 import java.util.Arrays;
-import java.util.List;
 
 import lab3.utils.NotBlockingFunctionsUtils;
 import utils.ArrayUtils;
 
 public class NonBlockingSample {
 
-    private static final int DEFAULT_ARRAY_SIZE = 90000;
+    public static final int DEFAULT_ARRAY_SIZE = 90000;
 
     public static void main(String[] args) throws InterruptedException {
         long[] numbers = ArrayUtils.getRandomArrayLong(DEFAULT_ARRAY_SIZE);

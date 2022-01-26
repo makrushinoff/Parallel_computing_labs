@@ -30,7 +30,7 @@ public final class ArrayUtils {
     public static Integer[] getLittleRandomArrayInteger(int arraySize) {
         Integer[] array = new Integer[arraySize];
         for(int i = 0; i < arraySize; i++) {
-            array[i] = (int) (Math.random() * 100);
+            array[i] = (int) (Math.random() * 10000);
         }
         return array;
     }

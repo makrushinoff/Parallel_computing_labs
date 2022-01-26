@@ -1,30 +1,42 @@
 package lab2;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.concurrent.Exchanger;
 
 public class CPUSample {
 
-    public static volatile boolean goHandle = true;
+    public static boolean goHandle = true;
 
-    public static void main(String[] args) throws InterruptedException {
-        Process process = new Process();
+    public static void sleepRandom() {
+        try {
+            Thread.sleep(Math.abs(new Random().nextInt()) % 100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-        CPU cpu1 = new CPU(process);
-        CPU cpu2 = new CPU(process);
-        CPUProcess cpuProcess = new CPUProcess(Math.abs(new Random().nextInt() % 100 + 10), process, Arrays.asList(cpu1, cpu2));
-        System.out.println("Inputed: " + cpuProcess.getGeneralNumberOfProcesses());
-        cpu1.start();
-        cpu2.start();
-        cpuProcess.start();
+    public static void main(String[] args) {
+        System.out.print("Input number of iterations: ");
+        int iterations = new Scanner(System.in).nextInt();
+        CPUQueue queue = new CPUQueue();
+        Exchanger<Process> exchanger1 = new Exchanger<>();
+        Exchanger<Process> exchanger2 = new Exchanger<>();
+        CPU cpu1 = new CPU(queue, exchanger1);
+        CPU cpu2 = new CPU(queue, exchanger2);
+        CPUProcess cpuProcess = new CPUProcess(Arrays.asList(cpu1, cpu2), queue, iterations);
+        final List<Thread> threads = List.of(cpu1, cpu2, cpuProcess);
+        threads.forEach(Thread::start);
+        threads.forEach(thread -> {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
 
-        cpuProcess.join();
-        cpu1.join();
-        cpu2.join();
-
-        int handled = cpu1.getHandledProcesses() + cpu2.getHandledProcesses();
-        int destroyed = cpuProcess.getGeneralNumberOfProcesses() - handled;
-        double percentOfDestroyed = ((double)destroyed / (double)cpuProcess.getGeneralNumberOfProcesses()) * 100;
-        System.out.println("Destroyed: " + destroyed + " processes. It is a " + percentOfDestroyed + "% of all processes");
+        System.out.println("Max queue size: " + queue.getMaxQueueSize());
     }
 }

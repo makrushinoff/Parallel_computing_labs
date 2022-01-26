@@ -1,49 +1,62 @@
 package lab2;
 
 import static lab2.CPUSample.goHandle;
+import static lab2.CPUSample.sleepRandom;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CPUProcess extends Thread {
 
-    public int generalNumberOfProcesses;
-    public int requestedProcesses = 0;
-    private final Process process;
     private final List<CPU> cpuList;
+    private final CPUQueue queue;
+    private final int numberOfIterations;
 
-    public CPUProcess(int generalNumberOfProcesses, Process process, List<CPU> cpuList) {
-        this.generalNumberOfProcesses = generalNumberOfProcesses;
-        this.process = process;
+    public CPUProcess(List<CPU> cpuList, CPUQueue queue, int numberOfIterations) {
         this.cpuList = cpuList;
+        this.queue = queue;
+        this.numberOfIterations = numberOfIterations;
     }
 
     @Override
     public void run() {
-        while(requestedProcesses <= generalNumberOfProcesses) {
-            System.out.println("Want to set message " + requestedProcesses);
-            synchronized (process) {
-                process.setMessage("Message " + requestedProcesses);
-                requestedProcesses++;
-                process.setNeedToHandle(true);
-                process.notify();
-            }
+        for(int i = 0; i < numberOfIterations; i++) {
+            Process process = new Process();
+            process.setMessage("Message " + i);
+                cpuList.forEach(cpu -> {
+                    if(!cpu.equals(cpuList.get(cpuList.size() - 1))){
+                        try {
+                            if(!process.isSent()) {
+                                cpu.getExchanger().exchange(process, 1, TimeUnit.MILLISECONDS);
+                                process.setSent(true);
+                            }
+                            cpu.getExchanger().exchange(process, 1, TimeUnit.MILLISECONDS);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (TimeoutException ignored) {}
+                    } else {
+                        try {
+                            if(!process.isSent()) {
+                                cpu.getExchanger().exchange(process, 1, TimeUnit.MILLISECONDS);
+                                process.setSent(true);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (TimeoutException e) {
+                            queue.add(process);
+                        }
+                    }
+                });
+            sleepRandom();
         }
         goHandle = false;
-        System.out.println("Process thread goes sleep");
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        cpuList.forEach(cpu -> {
-            if(!cpu.getState().equals(State.TERMINATED)) {
-                System.out.println("Interrupting " + cpu.getName());
-                cpu.interrupt();
-            }
-        });
+        cpuList.forEach(Thread::interrupt);
     }
 
-    public int getGeneralNumberOfProcesses() {
-        return generalNumberOfProcesses;
-    }
 }

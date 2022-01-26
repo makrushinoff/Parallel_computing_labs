@@ -1,44 +1,40 @@
 package lab2;
 
 import static lab2.CPUSample.goHandle;
+import static lab2.CPUSample.sleepRandom;
+
+import java.util.concurrent.Exchanger;
 
 public class CPU extends Thread {
 
-    private int handledProcesses = 0;
-    private final Process process;
+    private final CPUQueue queue;
+    private final Exchanger<Process> exchanger;
 
-    public CPU(Process process) {
-        this.process = process;
+    public CPU(CPUQueue queue, Exchanger<Process> exchanger) {
+        this.queue = queue;
+        this.exchanger = exchanger;
     }
 
     @Override
     public void run() {
         while(goHandle) {
-            synchronized (process) {
-                try {
-                    System.out.println(this.getName() + " is waiting");
-                    while(!process.isNeedToHandle()) {
-                        try {
-                            process.wait();
-                        } catch (InterruptedException e) {
-                            System.out.println("Force stopped " + getName());
-                            return;
-                        }
-                    }
-                    process.setNeedToHandle(false);
-                    System.out.println(this.getName() + " Got message: " + process.getMessage());
-                    Thread.sleep((long) (Math.random() * 1000 + 50));
-                    handledProcesses++;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                Process message;
+                if(queue.getQueue().isEmpty()) {
+                    message = exchanger.exchange(null);
+                } else {
+                    message = queue.get();
                 }
+                System.out.println(getName() + "Got message: " + message);
+                sleepRandom();
+            } catch (InterruptedException e) {
+                System.out.println(getName() + " is interrupted");
             }
         }
-        System.out.println(getName() + " goes sleep");
+
     }
 
-    public int getHandledProcesses() {
-        return handledProcesses;
+    public Exchanger<Process> getExchanger() {
+        return exchanger;
     }
-
 }

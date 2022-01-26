@@ -1,17 +1,11 @@
 package lab2;
 
+import java.util.StringJoiner;
+
 public class Process {
 
     private String message;
-    private boolean needToHandle;
-
-    public boolean isNeedToHandle() {
-        return needToHandle;
-    }
-
-    public void setNeedToHandle(boolean needToHandle) {
-        this.needToHandle = needToHandle;
-    }
+    private boolean sent;
 
     public String getMessage() {
         return message;
@@ -19,5 +13,18 @@ public class Process {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isSent() {
+        return sent;
+    }
+
+    public void setSent(boolean sent) {
+        this.sent = sent;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Process.class.getSimpleName() + "[", "]").add("message='" + message + "'").toString();
     }
 }

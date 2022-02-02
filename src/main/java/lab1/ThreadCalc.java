@@ -1,33 +1,28 @@
 package lab1;
 
-import java.util.List;
-
 public class ThreadCalc extends Thread {
 
-    private List<Double> array;
-    private int startIndex;
-    private int endIndex;
+    private final int[][] matrix;
+    private final int startIndex;
+    private final int endIndex;
 
-    private double result = 0.0;
-
-    public ThreadCalc(List<Double> array, int startIndex, int endIndex) {
-        this.array = array;
+    public ThreadCalc(int[][] matrix, int startIndex, int endIndex) {
+        this.matrix = matrix;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }
 
     @Override
     public void run() {
-        double maxValue = 0.0;
         for (int i = startIndex; i <= endIndex; i++) {
-            if(maxValue < Math.abs(array.get(i))) {
-                maxValue = array.get(i);
+            int rowSum = 0;
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] != matrix[i][i]) {
+                    rowSum += matrix[i][j];
+                }
             }
+            matrix[i][i] = rowSum;
         }
-        result = maxValue;
     }
 
-    public double getResult() {
-        return result;
-    }
 }

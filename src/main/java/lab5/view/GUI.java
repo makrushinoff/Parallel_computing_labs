@@ -28,7 +28,7 @@ public class GUI extends Application {
         Text inputCodeText = new Text("Input room code to join, or create new room");
         welcomeText.setFont(Font.font("verdana", FontWeight.NORMAL, FontPosture.REGULAR, 15));
         TextField inputCodeTextField = new TextField();
-
+        return null;
     }
 
 }

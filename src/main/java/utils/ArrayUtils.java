@@ -19,6 +19,14 @@ public final class ArrayUtils {
         return array;
     }
 
+    public static int[] getRandomArrayIntegerPrimitive(int arraySize) {
+        int[] array = new int[arraySize];
+        for(int i = 0; i < arraySize; i++) {
+            array[i] = random.nextInt() * 100;
+        }
+        return array;
+    }
+
     public static Integer[] getRandomArrayInteger(int arraySize) {
         Integer[] array = new Integer[arraySize];
         for(int i = 0; i < arraySize; i++) {

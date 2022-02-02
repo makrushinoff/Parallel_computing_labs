@@ -7,25 +7,6 @@ import utils.ArrayUtils;
 
 public class ThreadSample {
 
-    static int[][] cloneArray(int[][] src) {
-        int length = src.length;
-        int[][] target = new int[length][src[0].length];
-        for (int i = 0; i < length; i++) {
-            System.arraycopy(src[i], 0, target[i], 0, src[i].length);
-        }
-        return target;
-    }
-
-    static void printMatrix(int[][] matrix) {
-        for (int[] ints : matrix) {
-            System.out.print("[");
-            for (int anInt : ints) {
-                System.out.print(anInt + ", ");
-            }
-            System.out.println("]");
-        }
-    }
-
     static void calculateSingleThread(int[][] matrix) {
         for(int i = 0; i < matrix.length; i++) {
             int rowSum = 0;
@@ -59,13 +40,13 @@ public class ThreadSample {
             j += elementsPerThread;
         }
         long timeBefore = System.currentTimeMillis();
-        for (int i = 0; i < threads.length; i++) {
-            threads[i].start();
+        for (ThreadCalc thread : threads) {
+            thread.start();
         }
-        for (int i = 0; i < threads.length; i++) {
-            threads[i].join();
+        for (ThreadCalc thread : threads) {
+            thread.join();
         }
-        System.out.printf("Result with %s threads: \n%s\n time : %sms.%n", threads.length,
+        System.out.printf("Result with %s threads: \n%s\nTime : %sms.%n", threads.length,
                 Arrays.toString(getMainDiagonal(matrix)), (System.currentTimeMillis() - timeBefore));
     }
 
@@ -82,7 +63,7 @@ public class ThreadSample {
                 .toArray(int[][]::new);
         long timeBefore = System.currentTimeMillis();
         calculateSingleThread(matrix);
-        System.out.printf("Result with single thread: \n%s \n Time : %sms.%n\n", Arrays.toString(getMainDiagonal(matrix)), (System.currentTimeMillis() - timeBefore));
+        System.out.printf("Result with single thread: \n%s \nTime : %sms.%n\n", Arrays.toString(getMainDiagonal(matrix)), (System.currentTimeMillis() - timeBefore));
         for(int i = 1; i <= 50; i++) {
             calculateParallel(i, matrix2);
         }
